@@ -170,8 +170,13 @@ class BlynclightNotFound(Exception):
 	pass
 
 class Blynclight(object):
-	BLYNCLIGHT_VENDOR  = 0x0e53
-	BLYNCLIGHT_PRODUCT = 0x2516
+#	BLYNCLIGHT_VENDOR  = 0x0e53
+#	BLYNCLIGHT_PRODUCT = 0x2516
+
+#   These values are correct for the blynclight wireless
+	BLYNCLIGHT_VENDOR  = 0x2c0d
+	BLYNCLIGHT_PRODUCT = 0x000b
+
 
 	def __init__(self, verbose=False):
 		"""Constructor"""
@@ -325,6 +330,7 @@ def cycle(bl, args):
 	seq = EffectSequence(bl, eseq, speed=args.speed)
 	while True: seq.render()
 
+
 def color(bl, args):
 	"""Set a specific color"""
 	color = Color((args.red, args.blue, args.green))
@@ -350,16 +356,17 @@ def main():
 
 	cmd_color = subparsers.add_parser('color', help=color.__doc__)
 	cmd_color.add_argument('red', type=int, help='Red intensity [0,255]')
-	cmd_color.add_argument('blue', type=int, help='Blue intensity [0,255]')
 	cmd_color.add_argument('green', type=int, help='Green intensity [0,255]')
+	cmd_color.add_argument('blue', type=int, help='Blue intensity [0,255]')
+
 	cmd_color.set_defaults(func=color)
 
 	cmd_pulse = subparsers.add_parser('pulse', help=pulse.__doc__)
 	cmd_pulse.add_argument('--speed', type=float)
 	cmd_pulse.add_argument('--iterations', type=int, help='Number of pulses')
 	cmd_pulse.add_argument('red', type=int, help='Red intensity [0,255]')
-	cmd_pulse.add_argument('blue', type=int, help='Blue intensity [0,255]')
 	cmd_pulse.add_argument('green', type=int, help='Green intensity [0,255]')
+	cmd_pulse.add_argument('blue', type=int, help='Blue intensity [0,255]')
 	cmd_pulse.set_defaults(func=pulse, speed=1, iterations=3)
 
 	args = parser.parse_args()
@@ -377,7 +384,7 @@ def main():
 			bl = Blynclight(verbose=args.verbose)
 			args.func(bl, args)
 		except BlynclightNotFound as e:
-			sys.stderr.write('Error: Could not find Blynclight. Is it plugged in?\n')
+			sys.stderr.write('Error: Could not find Blynclight. Is it plugged in? Make sure you are configured for the correct model number.\n')
 			sys.exit(1)
 		except KeyboardInterrupt:
 			pass
